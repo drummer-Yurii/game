@@ -1,6 +1,9 @@
+<script setup lang="ts">
+import GameHeader from './components/GameHeader.vue';
+</script>
+
 <template>
-  <h1>Виселица</h1>
-  <p>Отгадайте имя - введите букву</p>
+  <GameHeader />
   <div class="game-container">
     <svg height="250" width="200" class="figure-container">
       <!-- Rod -->
@@ -54,9 +57,3 @@
     <p>Вы уже вводили этот символ</p>
   </div>
 </template>
-
-<script setup lang="ts">
-
-</script>
-
-<style scoped></style>
