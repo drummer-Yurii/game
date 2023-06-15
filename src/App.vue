@@ -4,6 +4,7 @@ import GameFigure from './components/GameFigure.vue';
 import GameWrongLetters from './components/GameWrongLetters.vue';
 import GameWord from './components/GameWord.vue';
 import GamePopup from './components/GamePopup.vue';
+import GameNotification from './components/GameNotification.vue';
 </script>
 
 <template>
@@ -16,8 +17,5 @@ import GamePopup from './components/GamePopup.vue';
 
   <GamePopup />
 
-  <!-- Notification -->
-  <div class="notification-container show">
-    <p>Вы уже вводили этот символ</p>
-  </div>
+  <GameNotification />
 </template>
