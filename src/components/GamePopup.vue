@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div v-if="false" class="popup-container">
+    <div class="popup-container">
         <div class="popup">
             <h2>Поздравляю, вы победили! 😃</h2>
             <!-- <h2>Вы проиграли. 😕</h2> -->
