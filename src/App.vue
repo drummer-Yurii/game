@@ -6,8 +6,21 @@ import GameWord from './components/GameWord.vue';
 import GamePopup from './components/GamePopup.vue';
 import GameNotification from './components/GameNotification.vue';
 import { computed, ref, watch } from 'vue';
+import axios from 'axios';
 
-const word = ref('василий');
+const word = ref('');
+const getRandomWord = async () => {
+  try {
+    const {data} = await axios<{FirstName: string}>('https://api.randomdatatools.ru/?unescaped=false&params=FirstName')
+    word.value = data.FirstName.toLowerCase();
+  } catch (err) {
+    console.log(err);
+    word.value = ''
+  }
+}
+
+getRandomWord()
+
 const letters = ref<string[]>([]);
 const correctLetters = computed(() => letters.value.filter(x => word.value.includes(x)))
 const wrongLetters = computed(() => letters.value.filter(x => !word.value.includes(x)))
@@ -43,7 +56,8 @@ window.addEventListener('keydown', ({key}) => {
   }
 })
 
-const restart = () => {
+const restart = async () => {
+  await getRandomWord()
   letters.value = []
   popup.value?.close()
 }
