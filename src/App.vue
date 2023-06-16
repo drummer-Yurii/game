@@ -5,29 +5,22 @@ import GameWrongLetters from './components/GameWrongLetters.vue';
 import GameWord from './components/GameWord.vue';
 import GamePopup from './components/GamePopup.vue';
 import GameNotification from './components/GameNotification.vue';
-import { computed, ref, watch } from 'vue';
-import { getRandomName } from './api/getRandomName';
+import { ref, watch } from 'vue';
+import { useRandomWord } from './composables/useRandomWord';
+import { useLetters } from './composables/useLetters';
+import { useNotification } from './composables/useNotification';
 
-const word = ref('');
-const getRandomWord = async () => {
-  try {
-    const name = await getRandomName()
-    word.value = name.toLowerCase();
-  } catch (err) {
-    console.log(err);
-    word.value = ''
-  }
-}
+const {word, getRandomWord} = useRandomWord()
+const {letters, correctLetters, wrongLetters, isLose, isWin, addLetter, resetLetters} = useLetters(word)
+const {notification, showNotification} = useNotification()
 
-getRandomWord()
-
-const letters = ref<string[]>([]);
-const correctLetters = computed(() => letters.value.filter(x => word.value.includes(x)))
-const wrongLetters = computed(() => letters.value.filter(x => !word.value.includes(x)))
-const isLose = computed(() => wrongLetters.value.length === 6)
-const isWin = computed(() => [...word.value].every(x => correctLetters.value.includes(x)))
-const notification = ref<InstanceType<typeof GameNotification> | null>(null); 
 const popup = ref<InstanceType<typeof GamePopup> | null>(null); 
+
+const restart = async () => {
+  await getRandomWord()
+  resetLetters()
+  popup.value?.close()
+}
 
 watch(wrongLetters, () => {
   if (isLose.value) {
@@ -46,21 +39,11 @@ window.addEventListener('keydown', ({key}) => {
     return
   }
   if (letters.value.includes(key)) {
-    notification.value?.open()
-    setTimeout(() => notification.value?.close(), 2000)
-    return
+    showNotification()
   }
   
-  if (/[а-яА-ЯёЁ]/.test(key)) {
-    letters.value.push(key.toLowerCase())
-  }
+  addLetter(key)
 })
-
-const restart = async () => {
-  await getRandomWord()
-  letters.value = []
-  popup.value?.close()
-}
 </script>
 
 <template>
@@ -73,8 +56,4 @@ const restart = async () => {
 
   <GamePopup ref="popup" :word="word" @restart="restart" />
   <GameNotification ref="notification" />
-
-function getRandomName() {
-  throw new Error('Function not implemented.');
-}
 </template>
